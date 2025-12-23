@@ -21,18 +21,30 @@ function UpdatedAt() {
   return <div>Última atualização: {updatedAtText}</div>;
 }
 
-function MaxConnectionDatabase() {
+function DatabaseHealth() {
   const { isLoading, data } = useSWR("/api/v1/status", fetchAPI, {
     refreshInterval: 2000,
   });
 
-  let maxConnectionText = "Carregando...";
+  let versionDatabase = "Carregando...";
+  let maxConnectionsDatabase = "Carregando...";
+  let openedConnectionsDatabase = "Carregando...";
 
   if (!isLoading && data) {
-    maxConnectionText = data.dependencies.database.max_connections;
+    versionDatabase = data.dependencies.database.version;
+    maxConnectionsDatabase = data.dependencies.database.max_connections;
+    openedConnectionsDatabase = data.dependencies.database.opened_connections;
   }
 
-  return <div>Conexões máximas: {maxConnectionText}</div>;
+  return (
+    <div>
+      <ul>
+        <li>Conexões máximas: {versionDatabase}</li>
+        <li>Conexões máximas: {maxConnectionsDatabase}</li>
+        <li>Conexões máximas: {openedConnectionsDatabase}</li>
+      </ul>
+    </div>
+  );
 }
 
 export default function StatusPage() {
@@ -40,7 +52,8 @@ export default function StatusPage() {
     <>
       <h1>Status</h1>
       <UpdatedAt />
-      <MaxConnectionDatabase />
+      <h1>Database Health</h1>
+      <DatabaseHealth />
     </>
   );
 }
